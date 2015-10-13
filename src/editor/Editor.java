@@ -1,8 +1,9 @@
 package editor;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -38,7 +39,7 @@ public class Editor extends JFrame {
 		
 		// Create wrapper
 		wrapper = new JPanel();
-		wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.LINE_AXIS));
+		wrapper.setLayout(new GridBagLayout());
 	}
 	
 	public void makeVisible() {
@@ -49,9 +50,20 @@ public class Editor extends JFrame {
 	}
 	
 	private void addEditorComponents() {
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weighty = 1;
+		constraints.gridy = 0;
+		
 		// Add paint field
-		wrapper.add(new PaintField());
-		wrapper.add(new Tools());
+		constraints.gridx = 0;
+		constraints.weightx = 0.9;
+		wrapper.add(new PaintField(), constraints);
+		
+		// Add tools field
+		constraints.gridx = 1;
+		constraints.weightx = 0.1;
+		wrapper.add(new Tools(), constraints);
 		
 		// Add menu
 		setJMenuBar(new Menu());
