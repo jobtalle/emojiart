@@ -8,6 +8,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import menu.Menu;
 import paintfield.PaintField;
+import tools.Tools;
 
 @SuppressWarnings("serial")
 public class Editor extends JFrame {
@@ -24,6 +25,9 @@ public class Editor extends JFrame {
 		
 		// Make visible
 		Editor.instance.makeVisible();
+		
+		// Create tools
+		new Tools();
 	}
 	
 	public Editor() {
