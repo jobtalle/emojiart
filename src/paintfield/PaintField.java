@@ -5,12 +5,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import editor.Editor;
-
 @SuppressWarnings("serial")
 public class PaintField extends JPanel {
 	public PaintField() {
-		Editor.instance.add(this);
+		
 	}
 	
 	@Override

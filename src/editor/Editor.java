@@ -2,7 +2,9 @@ package editor;
 
 import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -13,6 +15,7 @@ import tools.Tools;
 @SuppressWarnings("serial")
 public class Editor extends JFrame {
 	public static Editor instance;
+	private JPanel wrapper;
 	
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -25,9 +28,6 @@ public class Editor extends JFrame {
 		
 		// Make visible
 		Editor.instance.makeVisible();
-		
-		// Create tools
-		new Tools();
 	}
 	
 	public Editor() {
@@ -35,6 +35,10 @@ public class Editor extends JFrame {
 		setTitle("Emoji art!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(true);
+		
+		// Create wrapper
+		wrapper = new JPanel();
+		wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.LINE_AXIS));
 	}
 	
 	public void makeVisible() {
@@ -45,10 +49,12 @@ public class Editor extends JFrame {
 	}
 	
 	private void addEditorComponents() {
-		// Add menu
-		new Menu();
-		
 		// Add paint field
-		new PaintField();
+		wrapper.add(new PaintField());
+		wrapper.add(new Tools());
+		
+		// Add menu
+		setJMenuBar(new Menu());
+		add(wrapper);
 	}
 }
