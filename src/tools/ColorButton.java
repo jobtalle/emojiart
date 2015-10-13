@@ -10,10 +10,12 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ColorButton extends JPanel {
 	Color color;
+	String str;
 	boolean pressed = false;
 	
-	public ColorButton(int i, int j, int k) {
+	public ColorButton(int i, int j, int k, String emoji) {
 		color = new Color(i, j, k);
+		str = emoji;
 		
 		this.addMouseListener(new MouseListener() {
 			@Override

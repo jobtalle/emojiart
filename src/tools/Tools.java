@@ -47,7 +47,7 @@ public class Tools extends JPanel {
 		
 		for(int x = 0; x < 4; x++) {
 			for(int y = 0; y < 2; y++) {
-				colors.add(new ColorButton(24, 50, 255));
+				colors.add(new ColorButton(24, 50, 255, ":001:"));
 			}
 		}
 	}
