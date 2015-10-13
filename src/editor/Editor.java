@@ -32,7 +32,7 @@ public class Editor extends JFrame {
 	
 	public Editor() {
 		// Configure frame
-		setTitle("Emoji art!");
+		setTitle("Emoji Art!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(true);
 		

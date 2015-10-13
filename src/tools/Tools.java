@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
@@ -26,7 +25,7 @@ public class Tools extends JPanel {
 		colors.setLayout(new GridLayout(4, 2));
 		for(int x = 0; x < 4; x++) {
 			for(int y = 0; y < 2; y++) {
-				colors.add(new JButton("X"));
+				colors.add(new ColorButton(24, 50, 255));
 			}
 		}
 		
