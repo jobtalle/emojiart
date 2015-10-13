@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import menu.Menu;
+import paintfield.PaintField;
 
 @SuppressWarnings("serial")
 public class Editor extends JFrame {
@@ -40,6 +41,10 @@ public class Editor extends JFrame {
 	}
 	
 	private void addEditorComponents() {
+		// Add menu
 		new Menu();
+		
+		// Add paint field
+		new PaintField();
 	}
 }
