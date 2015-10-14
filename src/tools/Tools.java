@@ -28,6 +28,75 @@ public class Tools extends JPanel {
 	private JPanel size;
 	private JPanel colors;
 	
+	private void loadPaletteFromFile(String fname) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(fname));
+		String line;
+		PaletteReadState state = PaletteReadState.IDENTIFIER;
+		ArrayList<ColorButton> buttons = new ArrayList<ColorButton>();
+		
+		// Buffered new color
+		String identifier = null;
+		int red = 0;
+		int green = 0;
+		int blue = 0;
+		
+		// Save palette to config
+		Editor.config.dirPalette = fname;
+		Editor.config.save();
+		
+		// Read first line
+		line = reader.readLine();
+		
+		while(line != null) {
+			switch(state) {
+			case IDENTIFIER:
+				identifier = line;
+				state = PaletteReadState.RED;
+				break;
+			case RED:
+				red = Integer.decode(line);
+				state = PaletteReadState.GREEN;
+				break;
+			case GREEN:
+				green = Integer.decode(line);
+				state = PaletteReadState.BLUE;
+				break;
+			case BLUE:
+				blue = Integer.decode(line);
+				
+				// Add new color
+				buttons.add(new ColorButton(red, green, blue, identifier));
+				
+				state = PaletteReadState.IDENTIFIER;
+				break;
+			}
+			
+			// Read next line
+			line = reader.readLine();
+		}
+		
+		// Close input stream
+		reader.close();
+		
+		// Activate palette
+		colors.removeAll();
+		
+		// Recalculate grid
+		int gridWidth = (int)Math.sqrt(buttons.size() / 2);
+		int gridHeight = (int)Math.ceil(buttons.size() / gridWidth);
+		colors.setLayout(new GridLayout(gridHeight, gridWidth));
+		
+		for(int i = 0; i < buttons.size(); i++) {
+			colors.add(buttons.get(i));
+		}
+		
+		colors.revalidate();
+		colors.repaint();
+		
+		// Clear image
+		PaintField.instance.clearColor((ColorButton)colors.getComponent(0));
+	}
+	
 	private void loadPalette() throws IOException {
 		JFileChooser chooser = null;
 		int response;
@@ -45,67 +114,7 @@ public class Tools extends JPanel {
 		response = chooser.showOpenDialog(Editor.instance);
 		
 		if(response == JFileChooser.APPROVE_OPTION) {
-			BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile().getAbsolutePath()));
-			String line;
-			PaletteReadState state = PaletteReadState.IDENTIFIER;
-			ArrayList<ColorButton> buttons = new ArrayList<ColorButton>();
-			
-			// Buffered new color
-			String identifier = null;
-			int red = 0;
-			int green = 0;
-			int blue = 0;
-			
-			// Save palette to config
-			Editor.config.dirPalette = chooser.getSelectedFile().getAbsolutePath();
-			Editor.config.save();
-			
-			// Read first line
-			line = reader.readLine();
-			
-			while(line != null) {
-				switch(state) {
-				case IDENTIFIER:
-					identifier = line;
-					state = PaletteReadState.RED;
-					break;
-				case RED:
-					red = Integer.decode(line);
-					state = PaletteReadState.GREEN;
-					break;
-				case GREEN:
-					green = Integer.decode(line);
-					state = PaletteReadState.BLUE;
-					break;
-				case BLUE:
-					blue = Integer.decode(line);
-					
-					// Add new color
-					buttons.add(new ColorButton(red, green, blue, identifier));
-					
-					state = PaletteReadState.IDENTIFIER;
-					break;
-				}
-				
-				// Read next line
-				line = reader.readLine();
-			}
-			
-			// Close input stream
-			reader.close();
-			
-			// Activate palette
-			colors.removeAll();
-			
-			for(int i = 0; i < buttons.size(); i++) {
-				colors.add(buttons.get(i));
-			}
-			
-			colors.revalidate();
-			colors.repaint();
-			
-			// Clear image
-			PaintField.instance.clearColor((ColorButton)colors.getComponent(0));
+			loadPaletteFromFile(chooser.getSelectedFile().getAbsolutePath());
 		}
 	}
 	
@@ -153,7 +162,16 @@ public class Tools extends JPanel {
 	}
 	
 	private void fillColors() {
-		defaultColors();
+		if(Editor.config.dirPalette != null) {
+			try {
+				loadPaletteFromFile(Editor.config.dirPalette);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(Editor.instance, "Error when reading file");
+			}
+		}
+		else {
+			defaultColors();
+		}
 	}
 	
 	public Tools() {

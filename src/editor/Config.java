@@ -37,7 +37,7 @@ public class Config implements Serializable {
 	private static Config createDefault() {
 		Config config = new Config();
 		
-		config.dirPalette = "";
+		config.dirPalette = null;
 		
 		return config;
 	}
