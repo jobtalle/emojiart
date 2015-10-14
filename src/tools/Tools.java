@@ -5,11 +5,24 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import editor.Editor;
 import paintfield.PaintField;
 
 @SuppressWarnings("serial")
@@ -17,6 +30,79 @@ public class Tools extends JPanel {
 	private JPanel export;
 	private JPanel size;
 	private JPanel colors;
+	
+	private void loadPalette() throws IOException {
+		JFileChooser chooser = null;
+		int response;
+		
+		try {
+			chooser = new JFileChooser(new File(Editor.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()));
+		} catch (URISyntaxException e) {
+			JOptionPane.showMessageDialog(Editor.instance, "Couldn't get the executable path");
+		}
+		
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.addChoosableFileFilter(new FileNameExtensionFilter("TXT Palette configurations", "txt"));
+		
+		// Request txt file
+		response = chooser.showOpenDialog(Editor.instance);
+		
+		if(response == JFileChooser.APPROVE_OPTION) {
+			BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile().getAbsolutePath()));
+			String line;
+			PaletteReadState state = PaletteReadState.IDENTIFIER;
+			ArrayList<ColorButton> buttons = new ArrayList<ColorButton>();
+			
+			// Buffered new color
+			String identifier = null;
+			int red = 0;
+			int green = 0;
+			int blue = 0;
+			
+			// Read first line
+			line = reader.readLine();
+			
+			while(line != null) {
+				switch(state) {
+				case IDENTIFIER:
+					identifier = line;
+					state = PaletteReadState.RED;
+					break;
+				case RED:
+					red = Integer.decode(line);
+					state = PaletteReadState.GREEN;
+					break;
+				case GREEN:
+					green = Integer.decode(line);
+					state = PaletteReadState.BLUE;
+					break;
+				case BLUE:
+					blue = Integer.decode(line);
+					
+					// Add new color
+					buttons.add(new ColorButton(red, green, blue, identifier));
+					
+					state = PaletteReadState.IDENTIFIER;
+					break;
+				}
+				
+				// Read next line
+				line = reader.readLine();
+			}
+			
+			// Close input stream
+			reader.close();
+			
+			// Activate palette
+			colors.removeAll();
+			
+			for(int i = 0; i < buttons.size(); i++) {
+				colors.add(buttons.get(i));
+			}
+			
+			colors.repaint();
+		}
+	}
 	
 	private void fillExport() {
 		JButton copy = new JButton("Copy");
@@ -34,7 +120,11 @@ public class Tools extends JPanel {
 		load.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Palette");
+				try {
+					loadPalette();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(Editor.instance, "Error when reading file");
+				}
 			}
 		});
 		
