@@ -100,7 +100,11 @@ public class Tools extends JPanel {
 				colors.add(buttons.get(i));
 			}
 			
+			colors.revalidate();
 			colors.repaint();
+			
+			// Clear image
+			PaintField.instance.clearColor((ColorButton)colors.getComponent(0));
 		}
 	}
 	
