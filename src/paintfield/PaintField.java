@@ -132,6 +132,8 @@ public class PaintField extends JPanel {
 			}
 		}
 		historyPush();
+		
+		repaint();
 	}
 	
 	public void triggerPaint(MouseEvent e) {
