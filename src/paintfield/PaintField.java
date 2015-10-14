@@ -10,6 +10,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.JPanel;
 
@@ -20,6 +22,7 @@ public class PaintField extends JPanel {
 	private static final Color backgroundColor = Color.LIGHT_GRAY;
 	private static final Color lineColor = Color.WHITE;
 	private static final int maxSize = 32;
+	private static final int gridLimit = 3;
 	
 	public static PaintField instance;
 	
@@ -149,6 +152,22 @@ public class PaintField extends JPanel {
 				
 			}
 		});
+		
+		this.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent arg0) {
+				if(arg0.getWheelRotation() < 0) {
+					zoomFactor++;
+					repaint();
+				}
+				else {
+					if(zoomFactor > 1) {
+						zoomFactor--;
+						repaint();
+					}
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -169,11 +188,13 @@ public class PaintField extends JPanel {
 			}
 		}
 		
-		g.setColor(lineColor);
-		for(int x = 0; x <= size.getWidth(); x++) {
-			for(int y = 0; y <= size.getHeight(); y++) {
-				g.drawLine(0, y * zoomFactor, (int)size.getWidth() * zoomFactor, y * zoomFactor);
-				g.drawLine(x * zoomFactor, 0, x * zoomFactor, (int)size.getHeight() * zoomFactor);
+		if(zoomFactor >= gridLimit) {
+			g.setColor(lineColor);
+			for(int x = 0; x <= size.getWidth(); x++) {
+				for(int y = 0; y <= size.getHeight(); y++) {
+					g.drawLine(0, y * zoomFactor, (int)size.getWidth() * zoomFactor, y * zoomFactor);
+					g.drawLine(x * zoomFactor, 0, x * zoomFactor, (int)size.getHeight() * zoomFactor);
+				}
 			}
 		}
 	}
