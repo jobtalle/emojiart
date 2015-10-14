@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
+import paintfield.PaintField;
+
 @SuppressWarnings("serial")
 public class ColorButton extends JPanel {
 	Color color;
@@ -14,6 +16,8 @@ public class ColorButton extends JPanel {
 	boolean pressed = false;
 	
 	public ColorButton(int i, int j, int k, String emoji) {
+		final ColorButton self = this;
+		
 		color = new Color(i, j, k);
 		str = emoji;
 		
@@ -36,6 +40,7 @@ public class ColorButton extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				pressed = true;
+				PaintField.instance.setColor(self);
 				repaint();
 			}
 
@@ -45,6 +50,10 @@ public class ColorButton extends JPanel {
 				repaint();
 			}
 		});
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 	
 	@Override

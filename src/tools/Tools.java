@@ -42,14 +42,18 @@ public class Tools extends JPanel {
 		export.add(load);
 	}
 	
-	private void fillColors() {
+	private void defaultColors() {
 		colors.setLayout(new GridLayout(4, 2));
 		
 		for(int x = 0; x < 4; x++) {
 			for(int y = 0; y < 2; y++) {
-				colors.add(new ColorButton(24, 50, 255, ":001:"));
+				colors.add(new ColorButton(0, 0, 0, ""));
 			}
 		}
+	}
+	
+	private void fillColors() {
+		defaultColors();
 	}
 	
 	public Tools() {
