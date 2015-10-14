@@ -32,7 +32,7 @@ public class PaintField extends JPanel {
 	private void paintAt(Point point) {
 		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
 		
-		if(actualPoint.x >= 0 && actualPoint.x < maxSize && actualPoint.y >= 0 && actualPoint.y < maxSize) {
+		if(actualPoint.x >= 0 && actualPoint.x < size.getWidth() && actualPoint.y >= 0 && actualPoint.y < size.getHeight()) {
 			if(current != null && grid[actualPoint.x][actualPoint.y] != current) {
 				grid[actualPoint.x][actualPoint.y] = current;
 				repaint();
@@ -56,7 +56,7 @@ public class PaintField extends JPanel {
 	private void floodFill(Point point) {
 		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
 		
-		if(actualPoint.x >= 0 && actualPoint.x < maxSize && actualPoint.y >= 0 && actualPoint.y < maxSize) {
+		if(actualPoint.x >= 0 && actualPoint.x < size.getWidth() && actualPoint.y >= 0 && actualPoint.y < size.getHeight()) {
 			if(current != null && grid[actualPoint.x][actualPoint.y] != current) {
 				flood(actualPoint, grid[actualPoint.x][actualPoint.y], current);
 				repaint();
