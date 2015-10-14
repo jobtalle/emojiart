@@ -4,10 +4,10 @@ Compose pixel art with emojis
 A palette must be loaded to describe colors and their associated shortcuts. An example 3 bit color palette is provided.
 Palettes are simple .txt files. Repeat for every color:
 
-String -> shortcut
-Integer -> red
-Integer -> green
-Integer -> blue
+* String -> shortcut
+* Integer -> red
+* Integer -> green
+* Integer -> blue
 
 All colors range from [0, 255].
 
