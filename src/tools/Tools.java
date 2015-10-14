@@ -13,8 +13,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -24,9 +26,14 @@ import paintfield.PaintField;
 
 @SuppressWarnings("serial")
 public class Tools extends JPanel {
+	public static Tools instance;
+	
 	private JPanel export;
 	private JPanel size;
 	private JPanel colors;
+	
+	private JLabel sizeDesc = new JLabel();
+	private JLabel countDesc = new JLabel();
 	
 	private void loadPaletteFromFile(String fname) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(fname));
@@ -183,9 +190,30 @@ public class Tools extends JPanel {
 		}
 	}
 	
+	public void updateText() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append((int)PaintField.instance.getSize().getWidth());
+		sb.append("x");
+		sb.append((int)PaintField.instance.getSize().getHeight());
+		
+		// Update size description
+		sizeDesc.setText(sb.toString());
+		
+		sb = new StringBuilder();
+				
+		sb.append((int)(PaintField.instance.getSize().getWidth() * PaintField.instance.getSize().getHeight()));
+		sb.append(" emoji's");
+		
+		// Update count description
+		countDesc.setText(sb.toString());
+	}
+	
 	public Tools() {
 		GridBagConstraints constraints = new GridBagConstraints();
 		setLayout(new GridBagLayout());
+		
+		instance = this;
 		
 		// Common constraints
 		constraints.gridx = 0;
@@ -205,10 +233,13 @@ public class Tools extends JPanel {
 		// Create size editor
 		size = new JPanel();
 		size.setBorder(BorderFactory.createTitledBorder("Size"));
+		size.setLayout(new BoxLayout(size, BoxLayout.PAGE_AXIS));
+		size.add(sizeDesc);
+		size.add(countDesc);
 		
 		// Add size
 		constraints.gridy = 1;
-		constraints.weighty = 0.2;
+		constraints.weighty = 0.1;
 		add(size, constraints);
 		
 		// Create color chooser

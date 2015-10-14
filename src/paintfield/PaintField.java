@@ -16,12 +16,13 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 
 import tools.ColorButton;
+import tools.Tools;
 
 @SuppressWarnings("serial")
 public class PaintField extends JPanel {
 	private static final Color backgroundColor = Color.LIGHT_GRAY;
 	private static final Color lineColor = Color.WHITE;
-	private static final int maxSize = 32;
+	private static final int maxSize = 49;
 	private static final int gridLimit = 3;
 	
 	public static PaintField instance;
@@ -90,6 +91,10 @@ public class PaintField extends JPanel {
 		current = color;
 	}
 	
+	public Dimension getSize() {
+		return size;
+	}
+	
 	public void clearColor(ColorButton color) {
 		// Set all pixels to color
 		for(int x = 0; x < maxSize; x++) {
@@ -119,6 +124,7 @@ public class PaintField extends JPanel {
 			
 			size.width = actualPoint.x;
 			size.height = actualPoint.y;
+			Tools.instance.updateText();
 			repaint();
 		}
 	}
