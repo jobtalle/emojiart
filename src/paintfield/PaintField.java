@@ -7,13 +7,19 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import tools.ColorButton;
 import tools.Tools;
@@ -22,7 +28,7 @@ import tools.Tools;
 public class PaintField extends JPanel {
 	private static final Color backgroundColor = Color.LIGHT_GRAY;
 	private static final Color lineColor = Color.WHITE;
-	private static final int maxSize = 49;
+	private static final int maxSize = 48;
 	private static final int gridLimit = 3;
 	
 	public static PaintField instance;
@@ -33,7 +39,30 @@ public class PaintField extends JPanel {
 	private ColorButton[][] grid;
 	private ColorButton current = null;
 	
+	// History
+	private ArrayList<ColorButton[][]> history = new ArrayList<ColorButton[][]>();
+	
 	private boolean draggingSize = false;
+	
+	private void historyPush() {
+		ColorButton[][] savedGrid = new ColorButton[maxSize][maxSize];
+		
+		for(int x = 0; x < maxSize; x++) {
+			for(int y = 0; y < maxSize; y++) {
+				savedGrid[x][y] = grid[x][y];
+			}
+		}
+		
+		history.add(0, savedGrid);
+	}
+	
+	private void historyPop() {
+		if(history.size() != 0) {
+			grid = history.get(0);
+			history.remove(0);
+			repaint();
+		}
+	}
 	
 	private void paintAt(Point point) {
 		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
@@ -102,6 +131,7 @@ public class PaintField extends JPanel {
 				grid[x][y] = color;
 			}
 		}
+		historyPush();
 	}
 	
 	public void triggerPaint(MouseEvent e) {
@@ -119,8 +149,8 @@ public class PaintField extends JPanel {
 		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
 		
 		if(actualPoint.x >= 0 && actualPoint.y >= 0) {
-			if(actualPoint.x >= maxSize) actualPoint.x = maxSize - 1;
-			if(actualPoint.y >= maxSize) actualPoint.y = maxSize - 1;
+			if(actualPoint.x > maxSize) actualPoint.x = maxSize;
+			if(actualPoint.y > maxSize) actualPoint.y = maxSize;
 			
 			size.width = actualPoint.x;
 			size.height = actualPoint.y;
@@ -130,6 +160,17 @@ public class PaintField extends JPanel {
 	}
 	
 	public PaintField() {
+		String UNDO = "actionUndo";
+		
+		Action undo = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				historyPop();
+			}
+		};
+		
+		getActionMap().put(UNDO, undo);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control Z"), UNDO);
+		
 		instance = this;
 		
 		grid = new ColorButton[maxSize][maxSize];
@@ -175,6 +216,7 @@ public class PaintField extends JPanel {
 				}
 				else {
 					lastMouseButton = arg0.getButton();
+					historyPush();
 				}
 			}
 

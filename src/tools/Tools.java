@@ -237,6 +237,9 @@ public class Tools extends JPanel {
 		size.add(sizeDesc);
 		size.add(countDesc);
 		
+		// Set initial text
+		updateText();
+		
 		// Add size
 		constraints.gridy = 1;
 		constraints.weighty = 0.1;
