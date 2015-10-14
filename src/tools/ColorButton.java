@@ -56,6 +56,10 @@ public class ColorButton extends JPanel {
 		return color;
 	}
 	
+	public String getString() {
+		return str;
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		if(pressed) {

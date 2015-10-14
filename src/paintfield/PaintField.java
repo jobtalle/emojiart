@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -36,21 +39,40 @@ public class PaintField extends JPanel {
 		}
 	}
 	
+	public void export() {
+		StringBuilder result = new StringBuilder();
+		StringSelection selection;
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		
+		for(int y = 0; y < size.getHeight(); y++) {
+			for(int x = 0; x < size.getWidth(); x++) {
+				result.append(grid[x][y].getString());
+			}
+			
+			if(y != size.getHeight() - 1) result.append("\n");
+		}
+		
+		selection = new StringSelection(result.toString());
+		clipboard.setContents(selection, selection);
+	}
+	
 	public void setColor(ColorButton color) {
 		current = color;
+	}
+	
+	public void clearColor(ColorButton color) {
+		// Set all pixels to color
+		for(int x = 0; x < maxSize; x++) {
+			for(int y = 0; y < maxSize; y++) {
+				grid[x][y] = color;
+			}
+		}
 	}
 	
 	public PaintField() {
 		instance = this;
 		
 		grid = new ColorButton[maxSize][maxSize];
-		
-		// Set all pixels to unpainted
-		for(int x = 0; x < maxSize; x++) {
-			for(int y = 0; y < maxSize; y++) {
-				grid[x][y] = null;
-			}
-		}
 		
 		// Add paint listeners
 		this.addMouseMotionListener(new MouseMotionListener() {

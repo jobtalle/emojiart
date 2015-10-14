@@ -10,6 +10,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import paintfield.PaintField;
+
 @SuppressWarnings("serial")
 public class Tools extends JPanel {
 	private JPanel export;
@@ -24,7 +26,7 @@ public class Tools extends JPanel {
 		copy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Copy");
+				PaintField.instance.export();
 			}
 		});
 		
@@ -47,9 +49,12 @@ public class Tools extends JPanel {
 		
 		for(int x = 0; x < 4; x++) {
 			for(int y = 0; y < 2; y++) {
-				colors.add(new ColorButton(0, 0, 0, ""));
+				colors.add(new ColorButton(0, 0, 0, ":void:"));
 			}
 		}
+		
+		// Clear image
+		PaintField.instance.clearColor((ColorButton)colors.getComponent(0));
 	}
 	
 	private void fillColors() {
