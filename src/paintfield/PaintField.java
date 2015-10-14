@@ -15,6 +15,7 @@ import tools.ColorButton;
 @SuppressWarnings("serial")
 public class PaintField extends JPanel {
 	private static final Color backgroundColor = Color.LIGHT_GRAY;
+	private static final Color lineColor = Color.WHITE;
 	private static final int maxSize = 32;
 	
 	public static PaintField instance;
@@ -27,7 +28,7 @@ public class PaintField extends JPanel {
 	private void paintAt(Point point) {
 		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
 		
-		if(actualPoint.x > 0 && actualPoint.x < maxSize && actualPoint.y > 0 && actualPoint.y < maxSize) {
+		if(actualPoint.x >= 0 && actualPoint.x < maxSize && actualPoint.y >= 0 && actualPoint.y < maxSize) {
 			if(current != null && grid[actualPoint.x][actualPoint.y] != current) {
 				grid[actualPoint.x][actualPoint.y] = current;
 				repaint();
@@ -107,6 +108,14 @@ public class PaintField extends JPanel {
 				}
 				
 				g.fillRect(x * zoomFactor, y * zoomFactor, zoomFactor, zoomFactor);
+			}
+		}
+		
+		g.setColor(lineColor);
+		for(int x = 0; x <= size.getWidth(); x++) {
+			for(int y = 0; y <= size.getHeight(); y++) {
+				g.drawLine(0, y * zoomFactor, (int)size.getWidth() * zoomFactor, y * zoomFactor);
+				g.drawLine(x * zoomFactor, 0, x * zoomFactor, (int)size.getHeight() * zoomFactor);
 			}
 		}
 	}
