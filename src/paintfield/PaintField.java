@@ -23,6 +23,7 @@ public class PaintField extends JPanel {
 	
 	public static PaintField instance;
 	
+	private int lastMouseButton = MouseEvent.BUTTON1;
 	private Dimension size = new Dimension(16, 16);
 	private int zoomFactor = 16;
 	private ColorButton[][] grid;
@@ -34,6 +35,30 @@ public class PaintField extends JPanel {
 		if(actualPoint.x >= 0 && actualPoint.x < maxSize && actualPoint.y >= 0 && actualPoint.y < maxSize) {
 			if(current != null && grid[actualPoint.x][actualPoint.y] != current) {
 				grid[actualPoint.x][actualPoint.y] = current;
+				repaint();
+			}
+		}
+	}
+	
+	private void flood(Point point, ColorButton overwrite, ColorButton color) {
+		if(point.x < 0 || point.y < 0 || point.x >= size.getWidth() || point.y >= size.getHeight()) return;
+		
+		if(grid[point.x][point.y] == overwrite) {
+			grid[point.x][point.y] = color;
+			
+			flood(new Point(point.x - 1, point.y), overwrite, color);
+			flood(new Point(point.x + 1, point.y), overwrite, color);
+			flood(new Point(point.x, point.y - 1), overwrite, color);
+			flood(new Point(point.x, point.y + 1), overwrite, color);
+		}
+	}
+	
+	private void floodFill(Point point) {
+		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
+		
+		if(actualPoint.x >= 0 && actualPoint.x < maxSize && actualPoint.y >= 0 && actualPoint.y < maxSize) {
+			if(current != null && grid[actualPoint.x][actualPoint.y] != current) {
+				flood(actualPoint, grid[actualPoint.x][actualPoint.y], current);
 				repaint();
 			}
 		}
@@ -69,6 +94,17 @@ public class PaintField extends JPanel {
 		}
 	}
 	
+	public void triggerPaint(MouseEvent e) {
+		switch(lastMouseButton) {
+		case MouseEvent.BUTTON1:
+			paintAt(e.getPoint());
+			break;
+		case MouseEvent.BUTTON3:
+			floodFill(e.getPoint());
+			break;
+		}
+	}
+	
 	public PaintField() {
 		instance = this;
 		
@@ -78,7 +114,7 @@ public class PaintField extends JPanel {
 		this.addMouseMotionListener(new MouseMotionListener() {
 			@Override
 			public void mouseDragged(MouseEvent arg0) {
-				paintAt(arg0.getPoint());
+				triggerPaint(arg0);
 			}
 
 			@Override
@@ -90,7 +126,7 @@ public class PaintField extends JPanel {
 		this.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				paintAt(arg0.getPoint());
+				triggerPaint(arg0);
 			}
 
 			@Override
@@ -105,7 +141,7 @@ public class PaintField extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				
+				lastMouseButton = arg0.getButton();
 			}
 
 			@Override
