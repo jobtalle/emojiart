@@ -32,6 +32,8 @@ public class PaintField extends JPanel {
 	private ColorButton[][] grid;
 	private ColorButton current = null;
 	
+	private boolean draggingSize = false;
+	
 	private void paintAt(Point point) {
 		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
 		
@@ -108,6 +110,19 @@ public class PaintField extends JPanel {
 		}
 	}
 	
+	private void resizeCanvas(Point point) {
+		Point actualPoint = new Point(point.x / zoomFactor, point.y / zoomFactor);
+		
+		if(actualPoint.x >= 0 && actualPoint.y >= 0) {
+			if(actualPoint.x >= maxSize) actualPoint.x = maxSize - 1;
+			if(actualPoint.y >= maxSize) actualPoint.y = maxSize - 1;
+			
+			size.width = actualPoint.x;
+			size.height = actualPoint.y;
+			repaint();
+		}
+	}
+	
 	public PaintField() {
 		instance = this;
 		
@@ -117,7 +132,12 @@ public class PaintField extends JPanel {
 		this.addMouseMotionListener(new MouseMotionListener() {
 			@Override
 			public void mouseDragged(MouseEvent arg0) {
-				triggerPaint(arg0);
+				if(draggingSize) {
+					resizeCanvas(arg0.getPoint());
+				}
+				else {
+					triggerPaint(arg0);
+				}
 			}
 
 			@Override
@@ -144,12 +164,17 @@ public class PaintField extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				lastMouseButton = arg0.getButton();
+				if(arg0.getX() > size.getWidth() * zoomFactor || arg0.getY() > size.getHeight() * zoomFactor) {
+					draggingSize = true;
+				}
+				else {
+					lastMouseButton = arg0.getButton();
+				}
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				
+				draggingSize = false;
 			}
 		});
 		
