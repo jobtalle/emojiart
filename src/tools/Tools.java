@@ -170,7 +170,16 @@ public class Tools extends JPanel {
 			}
 		}
 		else {
-			defaultColors();
+			if(JOptionPane.showConfirmDialog(Editor.instance, "No palette has been loaded.\nDo you want to load one now?") == JOptionPane.YES_OPTION) {
+				try {
+					loadPalette();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(Editor.instance, "Error when reading file");
+				}
+			}
+			else {
+				defaultColors();
+			}
 		}
 	}
 	
