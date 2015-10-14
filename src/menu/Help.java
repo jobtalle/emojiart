@@ -19,7 +19,7 @@ public class Help extends JMenu {
 		about = new JMenuItem(new AbstractAction("About") {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(Editor.instance,"Pencil: LMB\nFlood fill: RMB\nScroll to zoom\nDrag outside the canvas to resize\n\nEmoji art\nCopyright Job Talle 2015");
+				JOptionPane.showMessageDialog(Editor.instance,"Pencil: LMB\nFlood fill: RMB\nScroll to zoom\nDrag outside the canvas to resize\n\nEmoji Art 1.1\nCopyright Job Talle 2015");
 			}
 		});
 		add(about);
