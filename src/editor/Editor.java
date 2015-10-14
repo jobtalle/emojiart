@@ -16,6 +16,7 @@ import tools.Tools;
 @SuppressWarnings("serial")
 public class Editor extends JFrame {
 	public static Editor instance;
+	public static Config config;
 	private JPanel wrapper;
 	
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
@@ -36,6 +37,9 @@ public class Editor extends JFrame {
 		setTitle("Emoji Art!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(true);
+		
+		// Load config
+		config = Config.loadConfig();
 		
 		// Create wrapper
 		wrapper = new JPanel();

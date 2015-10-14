@@ -7,12 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -58,6 +55,10 @@ public class Tools extends JPanel {
 			int red = 0;
 			int green = 0;
 			int blue = 0;
+			
+			// Save palette to config
+			Editor.config.dirPalette = chooser.getSelectedFile().getAbsolutePath();
+			Editor.config.save();
 			
 			// Read first line
 			line = reader.readLine();
